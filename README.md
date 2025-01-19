@@ -1,13 +1,9 @@
 # 🖥️ E-Commerce 구현하기
 
----
-
 >온라인 쇼핑몰에서 상품을 등록, 조회하고 장바구니 기능을 이용하는 서비스입니다.
 
 
 ## 프로젝트 기능 및 설계
-
----
 
 - 회원가입 기능
   - 사용자는 회원가입을 할 수 있다. 회원가입시 SELLER와 BUYER 권한을 선택하여 지닌다.
@@ -40,20 +36,12 @@
   - 사용자는 댓글 내용을 작성할 수 있다.
 
 ## ERD
-
----
-
 ![erd](doc/img/Commerce.png)
 
 ## Trouble Shooting
-
----
 [the trouble shooting page 👉](doc/TROUBLE_SHOOTING.md)
 
 ## Tech Stack
-
----
-
 ![Java](https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=java&logoColor=white)
 ![Spring](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)

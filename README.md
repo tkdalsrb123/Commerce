@@ -1,4 +1,4 @@
-# E-Commerce 구현하기
+# 🖥️ E-Commerce 구현하기
 
 ---
 
@@ -41,13 +41,18 @@
 
 ## ERD
 
---- 
+---
+
+![erd](doc/img/Commerce.png)
 
 ## Trouble Shooting
 
 ---
+[the trouble shooting page 👉](doc/TROUBLE_SHOOTING.md)
 
 ## Tech Stack
+
+---
 
 ![Java](https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=java&logoColor=white)
 ![Spring](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white)

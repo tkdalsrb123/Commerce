@@ -42,10 +42,10 @@
   - 장바구니에서 주문을 진행할 때 트랜잭션을 걸어 오류가 발생했을 때(제품이 삭제되거나, 가격에 변동이 있는 경우) 롤백이 가능하게 만든다.
 
 ## ERD
-![erd](doc/img/Commerce.png)
+![erd](docs/img/Commerce.png)
 
 ## Trouble Shooting
-[the trouble shooting page 👉](doc/TROUBLE_SHOOTING.md)
+[the trouble shooting page 👉](docs/TROUBLE_SHOOTING.md)
 
 ## Tech Stack
 ![Java](https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=java&logoColor=white)

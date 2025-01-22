@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import zerobase.commerce.user.domain.User;
-import zerobase.commerce.user.type.UserType;
 
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {

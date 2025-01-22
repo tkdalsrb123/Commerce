@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -14,7 +13,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import zerobase.commerce.jwt.JwtFilter;
 import zerobase.commerce.jwt.JwtUtil;
 import zerobase.commerce.jwt.LoginFilter;
-import zerobase.commerce.user.service.CustomUserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
@@ -30,6 +28,7 @@ public class SecurityConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     LoginFilter loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration),
         jwtUtil);
+
     // LoginFilter는 로그인 페이지가 /login 으로 설정되어있다. 로그인 페이지를 변환
     loginFilter.setFilterProcessesUrl("/user/login");
 

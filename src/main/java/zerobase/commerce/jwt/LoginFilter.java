@@ -12,7 +12,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import zerobase.commerce.user.dto.CustomUserDetails;
-import zerobase.commerce.user.type.UserType;
 
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 

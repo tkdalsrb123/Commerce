@@ -19,7 +19,7 @@ public class ProductService {
   private final UserRepository userRepository;
 
   public Product registerProduct(Request productDtoRequest, String username) {
-    User user = canRegister(username);
+    User user = validateSellerAuthority(username);
 
     return productRepository.save(Product.builder()
         .name(productDtoRequest.getProductName())
@@ -30,7 +30,7 @@ public class ProductService {
         .build());
   }
 
-  private User canRegister(String username) {
+  private User validateSellerAuthority(String username) {
     User user = userRepository.findByUsername(username)
         .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
@@ -41,13 +41,18 @@ public class ProductService {
     return user;
   }
 
-  @Transactional
-  public Product modifyProduct(Request productDtoRequest, Long productId, String username) {
-    User user = canRegister(username);
+  private Product validateProductAuthority(User user, Long productId) {
     Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("등록된 상품이 없습니다."));
     if (!product.getUser().getUsername().equals(user.getUsername())) {
       throw new RuntimeException("권한이 없습니다.");
     }
+    return product;
+  }
+
+  @Transactional
+  public Product modifyProduct(Request productDtoRequest, Long productId, String username) {
+    User user = validateSellerAuthority(username);
+    Product product = validateProductAuthority(user, productId);
 
     product.setName(productDtoRequest.getProductName());
     product.setDescription(productDtoRequest.getProductDescription());
@@ -57,4 +62,10 @@ public class ProductService {
     return product;
   }
 
+  @Transactional
+  public void deleteProduct(Long productId, String username) {
+    User user = validateSellerAuthority(username);
+    Product product = validateProductAuthority(user, productId);
+    productRepository.delete(product);
+  }
 }

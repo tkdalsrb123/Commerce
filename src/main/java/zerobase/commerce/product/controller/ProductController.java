@@ -1,8 +1,10 @@
 package zerobase.commerce.product.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,6 +27,12 @@ public class ProductController {
   @PostMapping("/seller/modify_product/{productId}")
   public ProductDto.Response modifyProduct(ProductDto.Request productDtoRequest, @PathVariable Long productId) {
     return ProductDto.Response.of(productService.modifyProduct(productDtoRequest, productId, username), username);
+  }
+
+  @DeleteMapping("/seller/delete_product/{productId}")
+  public ResponseEntity<String> deleteProduct(@PathVariable Long productId) {
+    productService.deleteProduct(productId, username);
+    return ResponseEntity.ok("상품 삭제 완료");
   }
 
 

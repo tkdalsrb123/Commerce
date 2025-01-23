@@ -27,7 +27,7 @@ public class ProductDto {
     private String productName;
     private String productDescription;
     private Double productPrice;
-    private LocalDateTime createdAt;
+    private LocalDateTime registerAt;
 
     public static Response of(Product product, String userName) {
       return Response.builder()
@@ -35,7 +35,7 @@ public class ProductDto {
           .productName(product.getName())
           .productDescription(product.getDescription())
           .productPrice(product.getPrice())
-          .createdAt(product.getCreatedAt())
+          .registerAt(product.getModifiedAt())
           .build();
     }
   }

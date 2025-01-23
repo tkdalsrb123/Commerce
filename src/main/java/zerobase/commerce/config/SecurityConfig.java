@@ -34,7 +34,7 @@ public class SecurityConfig {
 
     http.csrf((csrf) -> csrf.disable())
         .authorizeHttpRequests((auth) -> auth
-            .requestMatchers("/user/login", "/user/register").permitAll() // 모든 사용자 접근 가능
+            .requestMatchers("/user/login", "/user/register", "/product/**").permitAll() // 모든 사용자 접근 가능
             .requestMatchers("/buyer/**").hasRole("BUYER") // BUYER 권한만 접근 가능
             .requestMatchers("/seller/**").hasRole("SELLER") // SELLER 권한만 접근 가능
             .anyRequest().authenticated() // 다른 요청들은 로그인한 사용자만 접근 가능

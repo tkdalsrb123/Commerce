@@ -1,11 +1,13 @@
 package zerobase.commerce.product.service;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import zerobase.commerce.product.domain.Product;
 import zerobase.commerce.product.dto.ProductDto.Request;
 import zerobase.commerce.product.repository.ProductRepository;
+import zerobase.commerce.product.type.ProductCategory;
 import zerobase.commerce.user.domain.User;
 import zerobase.commerce.user.repository.UserRepository;
 import zerobase.commerce.user.type.UserType;
@@ -67,5 +69,17 @@ public class ProductService {
     User user = validateSellerAuthority(username);
     Product product = validateProductAuthority(user, productId);
     productRepository.delete(product);
+  }
+
+  public Product readProduct(Long productId) {
+    return productRepository.findById(productId).orElseThrow(() -> new RuntimeException("등록된 상품이 없습니다."));
+  }
+
+  public List<Product> readProductList(ProductCategory category) {
+    List<Product> products = productRepository.findAllByCategoryOrderByCreatedAt(category);
+    if (products.isEmpty()) {
+      throw new RuntimeException("해당 카테고리에 등록된 상품이 없습니다.");
+    }
+    return products;
   }
 }

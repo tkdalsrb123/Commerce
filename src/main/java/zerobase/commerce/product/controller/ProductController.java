@@ -29,31 +29,31 @@ public class ProductController {
     return SecurityContextHolder.getContext().getAuthentication().getName();
   }
 
-  @PostMapping("/seller/product/register")
+  @PostMapping("/seller/products")
   public ProductDto.Response registerProduct(ProductDto.Request productDtoRequest) {
     String username = getUsername();
     return ProductDto.Response.of(productService.registerProduct(productDtoRequest, username), username);
   }
 
-  @PutMapping("/seller/product/modify/{productId}")
+  @PutMapping("/seller/products/{productId}")
   public ProductDto.Response modifyProduct(ProductDto.Request productDtoRequest, @PathVariable Long productId) {
     String username = getUsername();
     return ProductDto.Response.of(productService.modifyProduct(productDtoRequest, productId, username), username);
   }
 
-  @DeleteMapping("/seller/product/delete/{productId}")
+  @DeleteMapping("/seller/products/{productId}")
   public ResponseEntity<String> deleteProduct(@PathVariable Long productId) {
     String username = getUsername();
     productService.deleteProduct(productId, username);
     return ResponseEntity.ok("상품 삭제 완료");
   }
 
-  @GetMapping("/product/read/{productId}")
+  @GetMapping("/products/{productId}")
   public ReadProductDto readProduct(@PathVariable Long productId) {
     return ReadProductDto.of(productService.readProduct(productId));
   }
 
-  @GetMapping("/product/read/{category}/list")
+  @GetMapping("/products/{category}")
   public List<ReadProductDto> readProductList(@PathVariable ProductCategory category) {
 
     return productService.readProductList(category).stream()

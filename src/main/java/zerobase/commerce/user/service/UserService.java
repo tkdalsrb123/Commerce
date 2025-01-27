@@ -15,11 +15,10 @@ public class UserService {
   private final PasswordEncoder passwordEncoder;
 
   public User register(UserDto.Request userDtoRequest) {
-    String passwordHash = passwordEncoder.encode(userDtoRequest.getPassword());
     return userRepository.save(
         User.builder()
             .username(userDtoRequest.getUsername())
-            .password(passwordHash)
+            .password(passwordEncoder.encode(userDtoRequest.getPassword()))
             .role(userDtoRequest.getRole())
             .build()
     );

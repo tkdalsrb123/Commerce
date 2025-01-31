@@ -1,8 +1,11 @@
 package zerobase.commerce.product.controller;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import zerobase.commerce.product.dto.ProductDto;
 import zerobase.commerce.product.dto.ReadProductDto;
@@ -29,36 +33,39 @@ public class ProductController {
     return SecurityContextHolder.getContext().getAuthentication().getName();
   }
 
-  @PostMapping("/seller/product/register")
-  public ProductDto.Response registerProduct(ProductDto.Request productDtoRequest) {
+  @PostMapping("/seller/products")
+  public ProductDto.Response registerProduct(@Valid ProductDto.Request productDtoRequest) {
     String username = getUsername();
-    return ProductDto.Response.of(productService.registerProduct(productDtoRequest, username), username);
+    return ProductDto.Response.of(productService.registerProduct(productDtoRequest, username),
+        username);
   }
 
-  @PutMapping("/seller/product/modify/{productId}")
-  public ProductDto.Response modifyProduct(ProductDto.Request productDtoRequest, @PathVariable Long productId) {
+  @PutMapping("/seller/products/{productId}")
+  public ProductDto.Response modifyProduct(@Valid ProductDto.Request productDtoRequest,
+      @PathVariable Long productId) {
     String username = getUsername();
-    return ProductDto.Response.of(productService.modifyProduct(productDtoRequest, productId, username), username);
+    return ProductDto.Response.of(
+        productService.modifyProduct(productDtoRequest, productId, username), username);
   }
 
-  @DeleteMapping("/seller/product/delete/{productId}")
+  @DeleteMapping("/seller/products/{productId}")
   public ResponseEntity<String> deleteProduct(@PathVariable Long productId) {
     String username = getUsername();
     productService.deleteProduct(productId, username);
     return ResponseEntity.ok("상품 삭제 완료");
   }
 
-  @GetMapping("/product/read/{productId}")
+  @GetMapping("/products/{productId}")
   public ReadProductDto readProduct(@PathVariable Long productId) {
     return ReadProductDto.of(productService.readProduct(productId));
   }
 
-  @GetMapping("/product/read/{category}/list")
-  public List<ReadProductDto> readProductList(@PathVariable ProductCategory category) {
+  @GetMapping("/products/category/{category}")
+  public Page<ReadProductDto> readProductList(@PathVariable ProductCategory category,
+      @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
 
-    return productService.readProductList(category).stream()
-        .map(ReadProductDto::of)
-        .collect(Collectors.toList());
+    Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+    return productService.readProductList(category, pageable).map(ReadProductDto::of);
   }
 
 }

@@ -1,7 +1,8 @@
 package zerobase.commerce.product.service;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import zerobase.commerce.product.domain.Product;
@@ -75,8 +76,8 @@ public class ProductService {
     return productRepository.findById(productId).orElseThrow(() -> new RuntimeException("등록된 상품이 없습니다."));
   }
 
-  public List<Product> readProductList(ProductCategory category) {
-    List<Product> products = productRepository.findAllByCategoryOrderByCreatedAt(category);
+  public Page<Product> readProductList(ProductCategory category, Pageable pageable) {
+    Page<Product> products = productRepository.findAllByCategory(category, pageable);
     if (products.isEmpty()) {
       throw new RuntimeException("해당 카테고리에 등록된 상품이 없습니다.");
     }

@@ -14,7 +14,7 @@ public class UserController {
 
   private final UserService userService;
 
-  @PostMapping("/user/register")
+  @PostMapping("/users")
   public UserDto.Response register(UserDto.Request userDtoRequest) {
     return UserDto.Response.of(
         userService.register((userDtoRequest)));

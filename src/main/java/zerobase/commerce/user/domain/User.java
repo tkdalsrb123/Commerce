@@ -44,6 +44,7 @@ public class User {
   private UserType role;
 
   @CreatedDate
+  @Column(updatable = false)
   private LocalDateTime created;
 
   @LastModifiedDate

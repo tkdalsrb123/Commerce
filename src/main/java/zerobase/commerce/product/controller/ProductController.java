@@ -1,9 +1,11 @@
 package zerobase.commerce.product.controller;
 
 import jakarta.validation.Valid;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import zerobase.commerce.product.dto.ProductDto;
 import zerobase.commerce.product.dto.ReadProductDto;
@@ -33,13 +36,16 @@ public class ProductController {
   @PostMapping("/seller/products")
   public ProductDto.Response registerProduct(@Valid ProductDto.Request productDtoRequest) {
     String username = getUsername();
-    return ProductDto.Response.of(productService.registerProduct(productDtoRequest, username), username);
+    return ProductDto.Response.of(productService.registerProduct(productDtoRequest, username),
+        username);
   }
 
   @PutMapping("/seller/products/{productId}")
-  public ProductDto.Response modifyProduct(@Valid ProductDto.Request productDtoRequest, @PathVariable Long productId) {
+  public ProductDto.Response modifyProduct(@Valid ProductDto.Request productDtoRequest,
+      @PathVariable Long productId) {
     String username = getUsername();
-    return ProductDto.Response.of(productService.modifyProduct(productDtoRequest, productId, username), username);
+    return ProductDto.Response.of(
+        productService.modifyProduct(productDtoRequest, productId, username), username);
   }
 
   @DeleteMapping("/seller/products/{productId}")
@@ -55,11 +61,11 @@ public class ProductController {
   }
 
   @GetMapping("/products/{category}")
-  public List<ReadProductDto> readProductList(@PathVariable ProductCategory category) {
+  public Page<ReadProductDto> readProductList(@PathVariable ProductCategory category,
+      @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
 
-    return productService.readProductList(category).stream()
-        .map(ReadProductDto::of)
-        .collect(Collectors.toList());
+    Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+    return productService.readProductList(category, pageable).map(ReadProductDto::of);
   }
 
 }

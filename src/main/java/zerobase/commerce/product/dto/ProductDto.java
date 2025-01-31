@@ -3,6 +3,7 @@ package zerobase.commerce.product.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,7 +22,7 @@ public class ProductDto {
     private String productDescription;
     @Min(value = 100, message = "가격은 100원 이상이어야 합니다.")
     private Double productPrice;
-    @NotBlank(message = "카테고리를 정해주세요.")
+    @NotNull(message = "카테고리를 정해주세요.")
     private ProductCategory productCategory;
   }
 

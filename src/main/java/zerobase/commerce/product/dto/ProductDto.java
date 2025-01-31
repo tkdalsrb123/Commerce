@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import zerobase.commerce.product.domain.Product;
 import zerobase.commerce.product.type.ProductCategory;
+import zerobase.commerce.validation.ValidEnum;
 
 public class ProductDto {
 
@@ -22,7 +23,7 @@ public class ProductDto {
     private String productDescription;
     @Min(value = 100, message = "가격은 100원 이상이어야 합니다.")
     private Double productPrice;
-    @NotNull(message = "카테고리를 정해주세요.")
+    @ValidEnum(enumClass = ProductCategory.class)
     private ProductCategory productCategory;
   }
 

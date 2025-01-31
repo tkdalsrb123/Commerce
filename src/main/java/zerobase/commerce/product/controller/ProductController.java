@@ -60,7 +60,7 @@ public class ProductController {
     return ReadProductDto.of(productService.readProduct(productId));
   }
 
-  @GetMapping("/products/{category}")
+  @GetMapping("/products/category/{category}")
   public Page<ReadProductDto> readProductList(@PathVariable ProductCategory category,
       @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
 

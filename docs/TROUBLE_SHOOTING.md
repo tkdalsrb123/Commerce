@@ -25,3 +25,16 @@ UserType role = UserType.valueOf(jwtUtil.getRole(token));
       }
     });
 ```
+
+---
+
+### 에러
+```
+jakarta.validation.UnexpectedTypeException: HV000030: No validator could be found for constraint 'jakarta.validation.constraints.NotBlank' validating type 'zerobase.commerce.product.type.ProductCategory'. Check configuration for 'productCategory'
+```
+
+### 해결과정
+- ValidEnum을 커스터마이징 하여 enum에 대하여 검증하는 어노테이션을 작성
+
+[ValidEnum.java](../src/main/java/zerobase/commerce/validation/ValidEnum.java)\
+[EnumValidator.java](../src/main/java/zerobase/commerce/validation/EnumValidator.java)

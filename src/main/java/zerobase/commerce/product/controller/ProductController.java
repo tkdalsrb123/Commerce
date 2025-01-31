@@ -1,5 +1,6 @@
 package zerobase.commerce.product.controller;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -30,13 +31,13 @@ public class ProductController {
   }
 
   @PostMapping("/seller/products")
-  public ProductDto.Response registerProduct(ProductDto.Request productDtoRequest) {
+  public ProductDto.Response registerProduct(@Valid ProductDto.Request productDtoRequest) {
     String username = getUsername();
     return ProductDto.Response.of(productService.registerProduct(productDtoRequest, username), username);
   }
 
   @PutMapping("/seller/products/{productId}")
-  public ProductDto.Response modifyProduct(ProductDto.Request productDtoRequest, @PathVariable Long productId) {
+  public ProductDto.Response modifyProduct(@Valid ProductDto.Request productDtoRequest, @PathVariable Long productId) {
     String username = getUsername();
     return ProductDto.Response.of(productService.modifyProduct(productDtoRequest, productId, username), username);
   }

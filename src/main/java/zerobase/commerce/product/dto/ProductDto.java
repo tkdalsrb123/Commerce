@@ -1,6 +1,8 @@
 package zerobase.commerce.product.dto;
 
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,9 +15,13 @@ public class ProductDto {
   @Getter
   @Setter
   public static class Request {
+    @NotBlank(message = "상품 이름을 작성하세요")
     private String productName;
+    @NotBlank(message = "상품 설명을 작성하세요.")
     private String productDescription;
+    @Min(value = 100, message = "가격은 100원 이상이어야 합니다.")
     private Double productPrice;
+    @NotBlank(message = "카테고리를 정해주세요.")
     private ProductCategory productCategory;
   }
 

@@ -37,6 +37,7 @@ public class SecurityConfig {
             .requestMatchers("/users/**", "/users", "/products/**").permitAll() // 모든 사용자 접근 가능
             .requestMatchers("/buyer/**").hasRole("BUYER") // BUYER 권한만 접근 가능
             .requestMatchers("/seller/**").hasRole("SELLER") // SELLER 권한만 접근 가능
+            .requestMatchers("/reviews/**").authenticated()
             .anyRequest().authenticated() // 다른 요청들은 로그인한 사용자만 접근 가능
         )
         // jwtFilter는 토큰의 유무를 확인. 이때 jwt를 검증하고 securityContextHolder에 세션을 생성

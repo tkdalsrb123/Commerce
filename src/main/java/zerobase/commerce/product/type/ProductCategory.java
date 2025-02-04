@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum ProductCategory {
+
   ELECTRONICS("전자 제품"),
   FASHION("의류 및 패션"),
   BEAUTY("화장품 및 뷰티"),

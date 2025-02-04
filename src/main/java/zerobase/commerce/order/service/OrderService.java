@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import zerobase.commerce.order.domain.Order;
 import zerobase.commerce.order.dto.OrderDto.Request;
-import zerobase.commerce.order.dto.OrderDto.Response;
 import zerobase.commerce.order.repository.OrderRepository;
 import zerobase.commerce.product.domain.Product;
 import zerobase.commerce.product.repository.ProductRepository;
@@ -22,7 +21,9 @@ public class OrderService {
 
   public Order createOrder(Request orderDtoRequest, String username) {
     User user = validateBuyerAuthority(username);
-    Product product = validateProductAuthority(orderDtoRequest.getProductId());
+    Product product = validateProductAuthority(orderDtoRequest.getProductId(), orderDtoRequest.getQuantity());
+
+    product.setStock(product.getStock() - orderDtoRequest.getQuantity());
 
     return orderRepository.save(Order.builder()
         .product(product)
@@ -43,13 +44,13 @@ public class OrderService {
     return user;
   }
 
-  private Product validateProductAuthority(Long productId) {
+  private Product validateProductAuthority(Long productId, int quantity) {
 
     Product product = productRepository.findProductById(productId)
         .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다."));
 
-    if (product.getStock() <= 0) {
-      throw new RuntimeException("수량이 없습니다.");
+    if (product.getStock() < quantity) {
+      throw new RuntimeException("재고가 부족합니다..");
     }
 
     return product;

@@ -8,8 +8,10 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +19,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import zerobase.commerce.order.domain.Order;
 import zerobase.commerce.user.type.UserType;
 
 @Entity
@@ -42,6 +45,9 @@ public class User {
   @Enumerated(EnumType.STRING)
   @Column(name = "role", nullable = false)
   private UserType role;
+
+  @OneToMany(mappedBy = "user")
+  private List<Order> orders;
 
   @CreatedDate
   @Column(updatable = false)

@@ -1,6 +1,8 @@
 package zerobase.commerce.order.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,6 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import zerobase.commerce.product.domain.Product;
 import zerobase.commerce.user.domain.User;
 
@@ -23,7 +26,8 @@ import zerobase.commerce.user.domain.User;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "order")
+@Table(name = "orders")
+@EntityListeners(AuditingEntityListener.class)
 public class Order {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

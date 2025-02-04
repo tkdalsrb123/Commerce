@@ -28,6 +28,7 @@ public class ProductService {
         .name(productDtoRequest.getProductName())
         .description(productDtoRequest.getProductDescription())
         .price(productDtoRequest.getProductPrice())
+        .stock(productDtoRequest.getProductQuantity())
         .category(productDtoRequest.getProductCategory())
         .user(user)
         .build());
@@ -45,7 +46,8 @@ public class ProductService {
   }
 
   private Product validateProductAuthority(User user, Long productId) {
-    Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("등록된 상품이 없습니다."));
+    Product product = productRepository.findById(productId)
+        .orElseThrow(() -> new RuntimeException("등록된 상품이 없습니다."));
     if (!product.getUser().getUsername().equals(user.getUsername())) {
       throw new RuntimeException("권한이 없습니다.");
     }
@@ -73,7 +75,8 @@ public class ProductService {
   }
 
   public Product readProduct(Long productId) {
-    return productRepository.findById(productId).orElseThrow(() -> new RuntimeException("등록된 상품이 없습니다."));
+    return productRepository.findById(productId)
+        .orElseThrow(() -> new RuntimeException("등록된 상품이 없습니다."));
   }
 
   public Page<Product> readProductList(ProductCategory category, Pageable pageable) {

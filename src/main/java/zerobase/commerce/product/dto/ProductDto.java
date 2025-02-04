@@ -23,6 +23,8 @@ public class ProductDto {
     private String productDescription;
     @Min(value = 100, message = "가격은 100원 이상이어야 합니다.")
     private Double productPrice;
+    @Min(value = 1, message = "수량은 1개 이상이어야 합니다.")
+    private int productQuantity;
     @ValidEnum(enumClass = ProductCategory.class)
     private ProductCategory productCategory;
   }

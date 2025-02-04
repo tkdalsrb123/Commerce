@@ -23,7 +23,7 @@ import zerobase.commerce.order.domain.Order;
 import zerobase.commerce.user.type.UserType;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,7 +33,6 @@ public class User {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "user_id")
   private Long id;
 
   @Column(name = "user_name", nullable = false, unique = true)

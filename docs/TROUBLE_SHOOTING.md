@@ -38,3 +38,17 @@ jakarta.validation.UnexpectedTypeException: HV000030: No validator could be foun
 
 [ValidEnum.java](../src/main/java/zerobase/commerce/validation/ValidEnum.java)\
 [EnumValidator.java](../src/main/java/zerobase/commerce/validation/EnumValidator.java)
+
+---
+
+### 에러
+```angular2html
+Caused by: java.sql.SQLSyntaxErrorException: 
+You have an error in your SQL syntax; 
+check the manual that corresponds to your MySQL server version for the right syntax to use near 
+'order add constraint FKt7abetueht6dd1gs9jyl3o4t7 foreign key (user_id) reference' at line 1
+```
+
+### 해결과정
+- mysql 예약어인 order by 와 order table 명이 충돌하여 생긴 오류
+- 이를 방지하기 위해 모든 table 명들을 복수형으로 변경

@@ -27,7 +27,7 @@ import zerobase.commerce.product.type.ProductCategory;
 import zerobase.commerce.user.domain.User;
 
 @Entity
-@Table(name = "product")
+@Table(name = "products")
 @Data
 @Builder
 @NoArgsConstructor

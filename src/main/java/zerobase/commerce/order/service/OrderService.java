@@ -50,7 +50,7 @@ public class OrderService {
         .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다."));
 
     if (product.getStock() < quantity) {
-      throw new RuntimeException("재고가 부족합니다..");
+      throw new RuntimeException("재고가 부족합니다.");
     }
 
     return product;

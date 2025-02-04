@@ -1,6 +1,7 @@
 package zerobase.commerce.product.repository;
 
 
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,4 +13,6 @@ import zerobase.commerce.product.type.ProductCategory;
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
   Page<Product> findAllByCategory(ProductCategory productCategory, Pageable pageable);
+
+  Optional<Product> findProductById(Long id);
 }

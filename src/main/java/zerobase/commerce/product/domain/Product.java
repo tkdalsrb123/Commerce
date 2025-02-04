@@ -11,8 +11,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,6 +22,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import zerobase.commerce.order.domain.Order;
 import zerobase.commerce.product.type.ProductCategory;
 import zerobase.commerce.user.domain.User;
 
@@ -45,6 +48,9 @@ public class Product {
   @Column(name = "product_price", nullable = false)
   private double price;
 
+  @Column(name = "stock")
+  private int stock;
+
   @Enumerated(EnumType.STRING)
   @Column(name = "category")
   private ProductCategory category;
@@ -52,6 +58,9 @@ public class Product {
   @ManyToOne
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
+
+  @OneToMany(mappedBy = "product")
+  private List<Order> orders;
 
   @CreatedDate
   private LocalDateTime createdAt;

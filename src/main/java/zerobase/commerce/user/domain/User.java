@@ -20,6 +20,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import zerobase.commerce.order.domain.Order;
+import zerobase.commerce.review.domain.Review;
 import zerobase.commerce.user.type.UserType;
 
 @Entity
@@ -47,6 +48,9 @@ public class User {
 
   @OneToMany(mappedBy = "user")
   private List<Order> orders;
+
+  @OneToMany(mappedBy = "user")
+  private List<Review> reviews;
 
   @CreatedDate
   @Column(updatable = false)

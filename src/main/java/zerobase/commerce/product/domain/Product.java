@@ -24,6 +24,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import zerobase.commerce.order.domain.Order;
 import zerobase.commerce.product.type.ProductCategory;
+import zerobase.commerce.review.domain.Review;
 import zerobase.commerce.user.domain.User;
 
 @Entity
@@ -61,6 +62,9 @@ public class Product {
 
   @OneToMany(mappedBy = "product")
   private List<Order> orders;
+
+  @OneToMany(mappedBy = "product")
+  private List<Review> reviews;
 
   @CreatedDate
   private LocalDateTime createdAt;

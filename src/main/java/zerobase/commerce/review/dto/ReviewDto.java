@@ -1,13 +1,13 @@
 package zerobase.commerce.review.dto;
 
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import zerobase.commerce.review.domain.Review;
-import zerobase.commerce.review.type.Rating;
-import zerobase.commerce.validation.ValidEnum;
 
 public class ReviewDto {
 
@@ -18,8 +18,10 @@ public class ReviewDto {
     private String title;
     @NotNull(message = "내용이 필요합니다.")
     private String content;
-    @ValidEnum(enumClass = Rating.class)
-    private Rating rating;
+    @Min(0)
+    @Max(5)
+    @NotNull(message = "점수가 필요합니다.")
+    private int rating;
   }
 
   @Getter
@@ -28,7 +30,7 @@ public class ReviewDto {
   public static class Response {
     private String title;
     private String content;
-    private Rating rating;
+    private int rating;
 
     public static ReviewDto.Response of(Review review) {
       return Response.builder()

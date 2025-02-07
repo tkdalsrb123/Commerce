@@ -23,7 +23,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import zerobase.commerce.product.domain.Product;
-import zerobase.commerce.review.type.Rating;
 import zerobase.commerce.user.domain.User;
 
 @Getter
@@ -56,8 +55,7 @@ public class Review {
 
 
   @Column(name = "rating")
-  @Enumerated(EnumType.ORDINAL)
-  private Rating rating;
+  private int rating;
 
   @CreatedDate
   private LocalDateTime createdAt;

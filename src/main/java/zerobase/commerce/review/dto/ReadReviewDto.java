@@ -1,11 +1,11 @@
-package zerobase.commerce.review.domain;
+package zerobase.commerce.review.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import zerobase.commerce.review.type.Rating;
+import zerobase.commerce.review.domain.Review;
 
 @Getter
 @Setter
@@ -16,7 +16,7 @@ public class ReadReviewDto {
   private String title;
   private String content;
   private String author;
-  private Rating rating;
+  private int rating;
 
   public static ReadReviewDto of(Review review) {
     return ReadReviewDto.builder()

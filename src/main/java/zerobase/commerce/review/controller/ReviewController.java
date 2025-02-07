@@ -16,14 +16,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import zerobase.commerce.review.domain.ReadReviewDto;
+import zerobase.commerce.review.dto.ReadReviewDto;
 import zerobase.commerce.review.dto.ReviewDto;
 import zerobase.commerce.review.service.ReviewService;
 
 @Controller
 @ResponseBody
 @RequiredArgsConstructor
-public class ReviewController {
+public class  ReviewController {
 
   private final ReviewService reviewService;
 

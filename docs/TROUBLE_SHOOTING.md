@@ -52,3 +52,15 @@ check the manual that corresponds to your MySQL server version for the right syn
 ### 해결과정
 - mysql 예약어인 order by 와 order table 명이 충돌하여 생긴 오류
 - 이를 방지하기 위해 모든 table 명들을 복수형으로 변경
+
+---
+
+### 에러
+```angular2html
+java.lang.ClassCastException: class java.lang.Long cannot be cast to class java.lang.Integer (java.lang.Long and java.lang.Integer are in module java.base of loader 'bootstrap')
+```
+
+### 해결과정
+- JPQL을 사용하여 직접 쿼리를 작성하고 데이터를 조회하였을 때 Integer 값도 Long으로 불러온다.
+- 이때 (Integer)를 사용하여 강제 캐스팅하게 되면 발생하는 오류로 이유는 Long은 null값이 포함될 수 있기 때문인다.
+- (Long) 으로 받은 후 .intValue()를 사용하여 안전하게 변환한다.

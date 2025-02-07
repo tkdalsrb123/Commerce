@@ -6,8 +6,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import zerobase.commerce.product.domain.Product;
+import zerobase.commerce.product.domain.ProductStats;
 import zerobase.commerce.product.dto.ProductDto.Request;
 import zerobase.commerce.product.repository.ProductRepository;
+import zerobase.commerce.product.repository.ProductStatsRepository;
 import zerobase.commerce.product.type.ProductCategory;
 import zerobase.commerce.user.domain.User;
 import zerobase.commerce.user.repository.UserRepository;
@@ -20,18 +22,24 @@ public class ProductService {
 
   private final ProductRepository productRepository;
   private final UserRepository userRepository;
+  private final ProductStatsRepository productStatsRepository;
 
   public Product registerProduct(Request productDtoRequest, String username) {
     User user = validateSellerAuthority(username);
 
-    return productRepository.save(Product.builder()
+
+    Product product = Product.builder()
         .name(productDtoRequest.getProductName())
         .description(productDtoRequest.getProductDescription())
         .price(productDtoRequest.getProductPrice())
         .stock(productDtoRequest.getProductQuantity())
         .category(productDtoRequest.getProductCategory())
         .user(user)
-        .build());
+        .build();
+
+    product.setProductStats(new ProductStats());
+
+    return productRepository.save(product);
   }
 
   private User validateSellerAuthority(String username) {
@@ -86,4 +94,7 @@ public class ProductService {
     }
     return products;
   }
+
+
+
 }

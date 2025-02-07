@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidEnum {
   Class<? extends Enum<?>> enumClass();
-  String message() default "올바른 카테고리를 입력해주세요.";
+  String message() default "올바른 값을 입력해주세요.";
   Class<?>[] groups() default {};
   Class<? extends Payload>[] payload() default {};
 }

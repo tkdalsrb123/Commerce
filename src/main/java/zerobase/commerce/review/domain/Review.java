@@ -1,4 +1,4 @@
-package zerobase.commerce.user.domain;
+package zerobase.commerce.review.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,56 +8,58 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import java.time.LocalDateTime;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import zerobase.commerce.order.domain.Order;
-import zerobase.commerce.review.domain.Review;
-import zerobase.commerce.user.type.UserType;
+import zerobase.commerce.product.domain.Product;
+import zerobase.commerce.user.domain.User;
 
-@Entity
-@Table(name = "users")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@Entity
 @EntityListeners(AuditingEntityListener.class)
-public class User {
+@Table(name = "reviews")
+@Builder
+public class Review {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  private long id;
 
-  @Column(name = "user_name", nullable = false, unique = true)
-  private String username;
+  @ManyToOne
+  @JoinColumn(name = "product_id")
+  private Product product;
 
-  @Column(name = "password", nullable = false)
-  private String password;
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private User user;
 
-  @Enumerated(EnumType.STRING)
-  @Column(name = "role", nullable = false)
-  private UserType role;
+  @Column(name = "title")
+  private String title;
 
-  @OneToMany(mappedBy = "user")
-  private List<Order> orders;
+  @Column(name = "content")
+  private String content;
 
-  @OneToMany(mappedBy = "user")
-  private List<Review> reviews;
+
+  @Column(name = "rating")
+  private int rating;
 
   @CreatedDate
-  @Column(updatable = false)
-  private LocalDateTime created;
+  private LocalDateTime createdAt;
 
   @LastModifiedDate
-  private LocalDateTime modified;
-
-
+  private LocalDateTime updatedAt;
 }

@@ -24,7 +24,7 @@ import zerobase.commerce.product.type.ProductCategory;
 @Controller
 @ResponseBody
 @RequiredArgsConstructor
-public class ProductController {
+public class  ProductController {
 
   private final ProductService productService;
 

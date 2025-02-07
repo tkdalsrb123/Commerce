@@ -6,8 +6,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import zerobase.commerce.product.domain.Product;
+import zerobase.commerce.product.domain.ProductStats;
 import zerobase.commerce.product.dto.ProductDto.Request;
 import zerobase.commerce.product.repository.ProductRepository;
+import zerobase.commerce.product.repository.ProductStatsRepository;
 import zerobase.commerce.product.type.ProductCategory;
 import zerobase.commerce.user.domain.User;
 import zerobase.commerce.user.repository.UserRepository;
@@ -20,17 +22,24 @@ public class ProductService {
 
   private final ProductRepository productRepository;
   private final UserRepository userRepository;
+  private final ProductStatsRepository productStatsRepository;
 
   public Product registerProduct(Request productDtoRequest, String username) {
     User user = validateSellerAuthority(username);
 
-    return productRepository.save(Product.builder()
+
+    Product product = Product.builder()
         .name(productDtoRequest.getProductName())
         .description(productDtoRequest.getProductDescription())
         .price(productDtoRequest.getProductPrice())
+        .stock(productDtoRequest.getProductQuantity())
         .category(productDtoRequest.getProductCategory())
         .user(user)
-        .build());
+        .build();
+
+    product.setProductStats(new ProductStats());
+
+    return productRepository.save(product);
   }
 
   private User validateSellerAuthority(String username) {
@@ -45,7 +54,8 @@ public class ProductService {
   }
 
   private Product validateProductAuthority(User user, Long productId) {
-    Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("등록된 상품이 없습니다."));
+    Product product = productRepository.findById(productId)
+        .orElseThrow(() -> new RuntimeException("등록된 상품이 없습니다."));
     if (!product.getUser().getUsername().equals(user.getUsername())) {
       throw new RuntimeException("권한이 없습니다.");
     }
@@ -73,7 +83,8 @@ public class ProductService {
   }
 
   public Product readProduct(Long productId) {
-    return productRepository.findById(productId).orElseThrow(() -> new RuntimeException("등록된 상품이 없습니다."));
+    return productRepository.findById(productId)
+        .orElseThrow(() -> new RuntimeException("등록된 상품이 없습니다."));
   }
 
   public Page<Product> readProductList(ProductCategory category, Pageable pageable) {
@@ -83,4 +94,7 @@ public class ProductService {
     }
     return products;
   }
+
+
+
 }

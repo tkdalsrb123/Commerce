@@ -28,20 +28,18 @@ public class OrderService {
     User user = validateBuyerAuthority(username);
     Product product = validateProductAuthority(orderDtoRequest.getProductId(), orderDtoRequest.getQuantity());
 
+    ProductStats stats = productStatsRepository.findById(product.getId()).orElseThrow(() -> new RuntimeException("집계 정보가 없습니다."));
+    stats.updateSales(orderDtoRequest.getQuantity());
+    productStatsRepository.save(stats);
+
     product.setStock(product.getStock() - orderDtoRequest.getQuantity());
 
-    Order order = orderRepository.save(Order.builder()
+    return orderRepository.save(Order.builder()
         .product(product)
         .user(user)
         .quantity(orderDtoRequest.getQuantity())
         .totalPrice(product.getPrice() * orderDtoRequest.getQuantity())
         .build());
-
-    ProductStats stats = productStatsRepository.findById(product.getId()).orElseThrow(() -> new RuntimeException("집계 정보가 없습니다."));
-    stats.updateSales(orderDtoRequest.getQuantity());
-    productStatsRepository.save(stats);
-
-    return order;
   }
 
   private User validateBuyerAuthority(String username) {

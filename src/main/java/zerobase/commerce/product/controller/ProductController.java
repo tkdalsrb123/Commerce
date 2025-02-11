@@ -20,11 +20,12 @@ import zerobase.commerce.product.dto.ProductDto;
 import zerobase.commerce.product.dto.ReadProductDto;
 import zerobase.commerce.product.service.ProductService;
 import zerobase.commerce.product.type.ProductCategory;
+import zerobase.commerce.product.type.ProductSortBy;
 
 @Controller
 @ResponseBody
 @RequiredArgsConstructor
-public class  ProductController {
+public class ProductController {
 
   private final ProductService productService;
 
@@ -62,10 +63,16 @@ public class  ProductController {
 
   @GetMapping("/products/category/{category}")
   public Page<ReadProductDto> readProductList(@PathVariable ProductCategory category,
-      @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size,
+      @RequestParam(defaultValue = "createdAt") ProductSortBy sortBy,
+      @RequestParam(defaultValue = "desc") String sortDirection) {
 
-    Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-    return productService.readProductList(category, pageable).map(ReadProductDto::of);
+    Sort.Direction direction = "asc".equalsIgnoreCase(sortDirection) ? Sort.Direction.ASC : Sort.Direction.DESC;
+
+    Pageable pageable = PageRequest.of(page, size, direction, sortBy.getField());
+
+    return productService.readProductList(category, sortBy, pageable).map(ReadProductDto::of);
   }
 
 }

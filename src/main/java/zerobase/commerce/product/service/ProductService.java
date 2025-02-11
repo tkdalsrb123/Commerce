@@ -24,6 +24,7 @@ public class ProductService {
   private final UserRepository userRepository;
   private final ProductStatsRepository productStatsRepository;
 
+  @Transactional
   public Product registerProduct(Request productDtoRequest, String username) {
     User user = validateSellerAuthority(username);
 
@@ -82,11 +83,13 @@ public class ProductService {
     productRepository.delete(product);
   }
 
+  @Transactional(readOnly = true)
   public Product readProduct(Long productId) {
     return productRepository.findById(productId)
         .orElseThrow(() -> new RuntimeException("등록된 상품이 없습니다."));
   }
 
+  @Transactional(readOnly = true)
   public Page<Product> readProductList(ProductCategory category, Pageable pageable) {
     Page<Product> products = productRepository.findAllByCategory(category, pageable);
     if (products.isEmpty()) {

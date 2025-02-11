@@ -2,6 +2,7 @@ package zerobase.commerce.order.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import zerobase.commerce.order.domain.Order;
 import zerobase.commerce.order.dto.OrderDto.Request;
 import zerobase.commerce.order.repository.OrderRepository;
@@ -19,6 +20,7 @@ public class OrderService {
   private final UserRepository userRepository;
   private final ProductRepository productRepository;
 
+  @Transactional
   public Order createOrder(Request orderDtoRequest, String username) {
     User user = validateBuyerAuthority(username);
     Product product = validateProductAuthority(orderDtoRequest.getProductId(), orderDtoRequest.getQuantity());

@@ -21,6 +21,7 @@ public class ReviewService {
   private final OrderRepository orderRepository;
   private final UserRepository userRepository;
 
+  @Transactional
   public Review createReview(Request reviewDtoRequest, Long orderId) {
     Order order = orderRepository.findById(orderId)
         .orElseThrow(() -> new RuntimeException("주문 정보가 없습니다."));
@@ -49,6 +50,7 @@ public class ReviewService {
     reviewRepository.deleteById(reviewId);
   }
 
+  @Transactional
   public Review modifyReview(Request reviewDtoRequest, Long reviewId, String username) {
     Review review = reviewRepository.findById(reviewId)
         .orElseThrow(() -> new RuntimeException("리뷰가 없습니다."));
@@ -66,6 +68,7 @@ public class ReviewService {
     return review;
   }
 
+  @Transactional(readOnly = true)
   public Page<Review> readReviewList(Long productId, Pageable pageable) {
     Page<Review> reviews = reviewRepository.findAllByProductId(productId, pageable);
     if (reviews.isEmpty()) {

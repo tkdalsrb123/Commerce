@@ -7,7 +7,9 @@ import zerobase.commerce.order.domain.Order;
 import zerobase.commerce.order.dto.OrderDto.Request;
 import zerobase.commerce.order.repository.OrderRepository;
 import zerobase.commerce.product.domain.Product;
+import zerobase.commerce.product.domain.ProductStats;
 import zerobase.commerce.product.repository.ProductRepository;
+import zerobase.commerce.product.repository.ProductStatsRepository;
 import zerobase.commerce.user.domain.User;
 import zerobase.commerce.user.repository.UserRepository;
 import zerobase.commerce.user.type.UserType;
@@ -19,6 +21,7 @@ public class OrderService {
   private final OrderRepository orderRepository;
   private final UserRepository userRepository;
   private final ProductRepository productRepository;
+  private final ProductStatsRepository productStatsRepository;
 
   @Transactional
   public Order createOrder(Request orderDtoRequest, String username) {
@@ -27,12 +30,18 @@ public class OrderService {
 
     product.setStock(product.getStock() - orderDtoRequest.getQuantity());
 
-    return orderRepository.save(Order.builder()
+    Order order = orderRepository.save(Order.builder()
         .product(product)
         .user(user)
         .quantity(orderDtoRequest.getQuantity())
         .totalPrice(product.getPrice() * orderDtoRequest.getQuantity())
         .build());
+
+    ProductStats stats = productStatsRepository.findById(product.getId()).orElseThrow(() -> new RuntimeException("집계 정보가 없습니다."));
+    stats.updateSales(orderDtoRequest.getQuantity());
+    productStatsRepository.save(stats);
+
+    return order;
   }
 
   private User validateBuyerAuthority(String username) {

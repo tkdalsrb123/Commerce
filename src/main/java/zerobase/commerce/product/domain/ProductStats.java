@@ -7,6 +7,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,7 +22,6 @@ import org.springframework.data.redis.core.RedisHash;
 @AllArgsConstructor
 @Entity
 @Table(name = "product_stats")
-//@RedisHash("ProductStats")
 public class ProductStats implements Serializable {
   @Id
   @Column(name = "product_id")
@@ -35,6 +35,10 @@ public class ProductStats implements Serializable {
   @Column(name = "total_reviews")
   private int totalReviews = 0;
 
+  // db에 적용하지 않을 때
+  @Transient
+  private int totalRatingSum;
+
   @Column(name = "average_rating")
   private double averageRating = 0.0;
 
@@ -46,13 +50,28 @@ public class ProductStats implements Serializable {
     this.productId = product.getId();
   }
 
-  public void updateReviews(int reviewCount, double averageRating) {
-    this.totalReviews = reviewCount;
-    this.averageRating = averageRating;
+  public void addReviews(int newRating) {
+    totalRatingSum += newRating;
+    totalReviews++;
+    updateAverageRating();
+  }
+
+  public void updateReviews(int oldRating, int newRating) {
+    totalRatingSum = totalRatingSum - oldRating + newRating;
+    updateAverageRating();
+  }
+
+  public void deleteReviews(int oldRating) {
+    totalRatingSum -= oldRating;
+    totalReviews--;
+    updateAverageRating();
+  }
+
+  private void updateAverageRating() {
+    this.averageRating = (totalReviews == 0) ? 0 : Math.round((double) totalRatingSum / totalReviews);
   }
 
   public void updateSales(int salesCount) {
-    this.totalSales = salesCount;
+    totalSales += totalSales;
   }
-
 }

@@ -35,8 +35,8 @@ public class ProductStats implements Serializable {
   private int totalReviews = 0;
 
   // db에 적용하지 않을 때
-  @Transient
-  private int totalRatingSum;
+  @Column(name = "total_rating_sum")
+  private int totalRatingSum = 0;
 
   @Column(name = "average_rating")
   private double averageRating = 0.0;
@@ -50,27 +50,29 @@ public class ProductStats implements Serializable {
   }
 
   public void addReviews(int newRating) {
-    totalRatingSum += newRating;
-    totalReviews++;
+    this.totalRatingSum += newRating;
+    this.totalReviews++;
     updateAverageRating();
   }
 
   public void updateReviews(int oldRating, int newRating) {
-    totalRatingSum = totalRatingSum - oldRating + newRating;
+    this.totalRatingSum = totalRatingSum - oldRating + newRating;
     updateAverageRating();
   }
 
   public void deleteReviews(int oldRating) {
-    totalRatingSum -= oldRating;
-    totalReviews--;
+    if (this.totalReviews > 0) {
+      this.totalRatingSum -= oldRating;
+      this.totalReviews--;
+    }
     updateAverageRating();
   }
 
   private void updateAverageRating() {
-    this.averageRating = (totalReviews == 0) ? 0 : Math.round((double) totalRatingSum / totalReviews);
+    this.averageRating = (this.totalReviews == 0) ? 0 : (double) this.totalRatingSum / this.totalReviews;
   }
 
   public void updateSales(int salesCount) {
-    totalSales += totalSales;
+    this.totalSales += salesCount;
   }
 }

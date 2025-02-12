@@ -21,6 +21,7 @@ import zerobase.commerce.product.dto.ReadProductDto;
 import zerobase.commerce.product.service.ProductService;
 import zerobase.commerce.product.type.ProductCategory;
 import zerobase.commerce.product.type.ProductSortBy;
+import zerobase.commerce.validation.ValidEnum;
 
 @Controller
 @ResponseBody
@@ -65,7 +66,7 @@ public class ProductController {
   public Page<ReadProductDto> readProductList(@PathVariable ProductCategory category,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size,
-      @RequestParam(defaultValue = "createdAt") ProductSortBy sortBy,
+      @RequestParam(defaultValue = "CREATED_AT") ProductSortBy sortBy,
       @RequestParam(defaultValue = "desc") String sortDirection) {
 
     Sort.Direction direction = "asc".equalsIgnoreCase(sortDirection) ? Sort.Direction.ASC : Sort.Direction.DESC;

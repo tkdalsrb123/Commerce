@@ -4,11 +4,11 @@ import lombok.Getter;
 
 @Getter
 public enum ProductSortBy {
-  CREATED_AT("createdAT"),
+  CREATED_AT("createdAt"),
   PRICE("price"),
   TOTAL_REVIEWS("totalReviews"),
-  AVERAGE_RATING("average_rating"),
-  TOTAL_SALES("total_sales");
+  AVERAGE_RATING("averageRating"),
+  TOTAL_SALES("totalSales");
 
   private final String field;
 

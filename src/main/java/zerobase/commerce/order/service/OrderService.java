@@ -2,11 +2,14 @@ package zerobase.commerce.order.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import zerobase.commerce.order.domain.Order;
 import zerobase.commerce.order.dto.OrderDto.Request;
 import zerobase.commerce.order.repository.OrderRepository;
 import zerobase.commerce.product.domain.Product;
+import zerobase.commerce.product.domain.ProductStats;
 import zerobase.commerce.product.repository.ProductRepository;
+import zerobase.commerce.product.repository.ProductStatsRepository;
 import zerobase.commerce.user.domain.User;
 import zerobase.commerce.user.repository.UserRepository;
 import zerobase.commerce.user.type.UserType;
@@ -18,10 +21,16 @@ public class OrderService {
   private final OrderRepository orderRepository;
   private final UserRepository userRepository;
   private final ProductRepository productRepository;
+  private final ProductStatsRepository productStatsRepository;
 
+  @Transactional
   public Order createOrder(Request orderDtoRequest, String username) {
     User user = validateBuyerAuthority(username);
     Product product = validateProductAuthority(orderDtoRequest.getProductId(), orderDtoRequest.getQuantity());
+
+    ProductStats stats = productStatsRepository.findById(product.getId()).orElseThrow(() -> new RuntimeException("집계 정보가 없습니다."));
+    stats.updateSales(orderDtoRequest.getQuantity());
+    productStatsRepository.save(stats);
 
     product.setStock(product.getStock() - orderDtoRequest.getQuantity());
 

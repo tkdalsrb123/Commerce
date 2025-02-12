@@ -11,6 +11,7 @@ import zerobase.commerce.product.dto.ProductDto.Request;
 import zerobase.commerce.product.repository.ProductRepository;
 import zerobase.commerce.product.repository.ProductStatsRepository;
 import zerobase.commerce.product.type.ProductCategory;
+import zerobase.commerce.product.type.ProductSortBy;
 import zerobase.commerce.user.domain.User;
 import zerobase.commerce.user.repository.UserRepository;
 import zerobase.commerce.user.type.UserType;
@@ -24,6 +25,7 @@ public class ProductService {
   private final UserRepository userRepository;
   private final ProductStatsRepository productStatsRepository;
 
+  @Transactional
   public Product registerProduct(Request productDtoRequest, String username) {
     User user = validateSellerAuthority(username);
 
@@ -82,13 +84,65 @@ public class ProductService {
     productRepository.delete(product);
   }
 
+  @Transactional(readOnly = true)
   public Product readProduct(Long productId) {
     return productRepository.findById(productId)
         .orElseThrow(() -> new RuntimeException("등록된 상품이 없습니다."));
   }
 
-  public Page<Product> readProductList(ProductCategory category, Pageable pageable) {
-    Page<Product> products = productRepository.findAllByCategory(category, pageable);
+
+  @Transactional(readOnly = true)
+  public Page<Product> readProductList(ProductCategory category, ProductSortBy sortBy, Pageable pageable) {
+
+    if (sortBy == ProductSortBy.PRICE) {
+      return getProductsSortByPrice(category, pageable);
+    } else if (sortBy == ProductSortBy.TOTAL_REVIEWS) {
+      return getProductsSortByTotalReviews(category, pageable);
+    } else if (sortBy == ProductSortBy.AVERAGE_RATING) {
+      return getProductsSortByAverageRating(category, pageable);
+    } else if (sortBy == ProductSortBy.TOTAL_SALES) {
+      return getProductsSortByTotalSales(category, pageable);
+    } else {
+      Page<Product> products = productRepository.findAllByCategory(category, pageable);
+      if (products.isEmpty()) {
+        throw new RuntimeException("해당 카테고리에 등록된 상품이 없습니다.");
+      }
+      return products;
+    }
+  }
+
+  private Page<Product> getProductsSortByTotalSales(ProductCategory category, Pageable pageable) {
+    Page<Product> products = productStatsRepository.findAllProductsByCategoryOrderByTotalSales(category, pageable);
+
+    if (products.isEmpty()) {
+      throw new RuntimeException("해당 카테고리에 등록된 상품이 없습니다.");
+    }
+
+    return products;
+  }
+
+  private Page<Product> getProductsSortByAverageRating(ProductCategory category, Pageable pageable) {
+    Page<Product> products = productStatsRepository.findAllProductsByCategoryOrderByAverageRating(category, pageable);
+
+    if (products.isEmpty()) {
+      throw new RuntimeException("해당 카테고리에 등록된 상품이 없습니다.");
+    }
+
+    return products;
+  }
+
+  private Page<Product> getProductsSortByTotalReviews(ProductCategory category, Pageable pageable) {
+    Page<Product> products = productStatsRepository.findAllProductsByCategoryOrderByTotalReviews(category, pageable);
+
+    if (products.isEmpty()) {
+      throw new RuntimeException("해당 카테고리에 등록된 상품이 없습니다.");
+    }
+
+    return products;
+  }
+
+  public Page<Product> getProductsSortByPrice(ProductCategory category, Pageable pageable) {
+    Page<Product> products = productRepository.findAllByCategoryOrderByPrice(category, pageable);
     if (products.isEmpty()) {
       throw new RuntimeException("해당 카테고리에 등록된 상품이 없습니다.");
     }

@@ -21,6 +21,7 @@ public class CartDto {
   private double price;
 
   public static CartDto of(Cart cart) {
+    System.out.println(cart);
     return CartDto.builder().productName(cart.getProduct().getName()).quantity(cart.getQuantity())
         .price(cart.getProduct().getPrice() * cart.getQuantity()).build();
   }

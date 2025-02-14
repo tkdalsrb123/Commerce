@@ -64,3 +64,12 @@ java.lang.ClassCastException: class java.lang.Long cannot be cast to class java.
 - JPQL을 사용하여 직접 쿼리를 작성하고 데이터를 조회하였을 때 Integer 값도 Long으로 불러온다.
 - 이때 (Integer)를 사용하여 강제 캐스팅하게 되면 발생하는 오류로 이유는 Long은 null값이 포함될 수 있기 때문인다.
 - (Long) 으로 받은 후 .intValue()를 사용하여 안전하게 변환한다.
+
+---
+
+### 에러
+- getCart()를 PostMan으로 API 테스트 중 403 에러
+
+### 해결과정
+- cart에 상품을 등록하거나 삭제하는 메서드는 잘 동작하는데 조회하는 기능은 403 error 반환한다.
+- 이유는 @ResponseBody의 유무인데 @Controller를 사용할 때 @ResponseBody가 없으면 Spring MVC는 뷰를 반환하려고 시도한다.

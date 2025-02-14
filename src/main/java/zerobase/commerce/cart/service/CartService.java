@@ -61,7 +61,7 @@ public class CartService {
   public List<Cart> getCartProducts(String username) {
     User user = userRepository.findByUsername(username)
         .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
-
+    System.out.println(user);
     return cartRepository.findAllByUser(user);
 
   }

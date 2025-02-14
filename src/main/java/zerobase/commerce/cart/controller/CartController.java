@@ -15,8 +15,8 @@ import zerobase.commerce.cart.dto.CartDto;
 import zerobase.commerce.cart.service.CartService;
 
 @Controller
-@ResponseBody
 @RequiredArgsConstructor
+@ResponseBody
 @RequestMapping("/buyer/cart")
 public class CartController {
 
@@ -49,5 +49,7 @@ public class CartController {
 
     return cartService.getCartProducts(username).stream().map(CartDto::of).toList();
   }
+
+
 
 }

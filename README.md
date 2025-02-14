@@ -18,8 +18,7 @@
   - 로그인을 하지 않은 사용자를 포함한 모든 사용자는 상품을 조회할 수 있다.
   - 상품은 카테고리별로 나뉘며 각 카테고리 안에 상품들은 최신순으로 기본 정렬된다.
   - 정렬 기능으로는 리뷰 많은순, 판매 많은순, 높은 가격순, 낮은 가격순이 있다.
-  - 리뷰 수, 판매량, 별점 평균의 집계 정보들은 스케줄링을 사용해 매시간마다 업데이트를 한다.
-  - 해당 정보를 가지고 있는 db는 Redis를 사용해 처리한다.
+  - 리뷰 수, 판매량, 별점 평균의 집계 정보들은 상품이 주문될 때마다 바로 업데이트한다.
   - 상품 목록 조회시 응답에는 상품 이름, 판매자, 상품 가격, 리뷰 수, 평균 별점의 정보가 필요하다.
   - 상품이 많을 수 있으므로 paging 처리를 한다.
 - 특정 상품 조회 기능
@@ -52,4 +51,3 @@
 ![Spring](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
 ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
-![Redis](https://img.shields.io/badge/Redis-D82C2C?style=for-the-badge&logo=redis&logoColor=white)

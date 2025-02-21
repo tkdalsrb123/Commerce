@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import zerobase.commerce.exception.CustomException;
+import zerobase.commerce.exception.ErrorCode;
 import zerobase.commerce.product.domain.Product;
 import zerobase.commerce.product.domain.ProductStats;
 import zerobase.commerce.product.dto.ProductDto.Request;
@@ -46,10 +48,10 @@ public class ProductService {
 
   private User validateSellerAuthority(String username) {
     User user = userRepository.findByUsername(username)
-        .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
     if (user.getRole() != UserType.ROLE_SELLER) {
-      throw new RuntimeException("권한이 없습니다.");
+      throw new CustomException(ErrorCode.UNAUTHORIZED_ACCESS);
     }
 
     return user;
@@ -57,9 +59,9 @@ public class ProductService {
 
   private Product validateProductAuthority(User user, Long productId) {
     Product product = productRepository.findById(productId)
-        .orElseThrow(() -> new RuntimeException("등록된 상품이 없습니다."));
+        .orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
     if (!product.getUser().getUsername().equals(user.getUsername())) {
-      throw new RuntimeException("권한이 없습니다.");
+      throw new CustomException(ErrorCode.UNAUTHORIZED_ACCESS);
     }
     return product;
   }
@@ -87,7 +89,7 @@ public class ProductService {
   @Transactional(readOnly = true)
   public Product readProduct(Long productId) {
     return productRepository.findById(productId)
-        .orElseThrow(() -> new RuntimeException("등록된 상품이 없습니다."));
+        .orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
   }
 
 
@@ -105,7 +107,7 @@ public class ProductService {
     } else {
       Page<Product> products = productRepository.findAllByCategory(category, pageable);
       if (products.isEmpty()) {
-        throw new RuntimeException("해당 카테고리에 등록된 상품이 없습니다.");
+        throw new CustomException(ErrorCode.PRODUCTS_NOT_FOUND_IN_CATEGORY);
       }
       return products;
     }
@@ -115,7 +117,7 @@ public class ProductService {
     Page<Product> products = productStatsRepository.findAllProductsByCategoryOrderByTotalSales(category, pageable);
 
     if (products.isEmpty()) {
-      throw new RuntimeException("해당 카테고리에 등록된 상품이 없습니다.");
+      throw new CustomException(ErrorCode.PRODUCTS_NOT_FOUND_IN_CATEGORY);
     }
 
     return products;
@@ -125,7 +127,7 @@ public class ProductService {
     Page<Product> products = productStatsRepository.findAllProductsByCategoryOrderByAverageRating(category, pageable);
 
     if (products.isEmpty()) {
-      throw new RuntimeException("해당 카테고리에 등록된 상품이 없습니다.");
+      throw new CustomException(ErrorCode.PRODUCTS_NOT_FOUND_IN_CATEGORY);
     }
 
     return products;
@@ -135,7 +137,7 @@ public class ProductService {
     Page<Product> products = productStatsRepository.findAllProductsByCategoryOrderByTotalReviews(category, pageable);
 
     if (products.isEmpty()) {
-      throw new RuntimeException("해당 카테고리에 등록된 상품이 없습니다.");
+      throw new CustomException(ErrorCode.PRODUCTS_NOT_FOUND_IN_CATEGORY);
     }
 
     return products;
@@ -144,7 +146,7 @@ public class ProductService {
   public Page<Product> getProductsSortByPrice(ProductCategory category, Pageable pageable) {
     Page<Product> products = productRepository.findAllByCategoryOrderByPrice(category, pageable);
     if (products.isEmpty()) {
-      throw new RuntimeException("해당 카테고리에 등록된 상품이 없습니다.");
+      throw new CustomException(ErrorCode.PRODUCTS_NOT_FOUND_IN_CATEGORY);
     }
     return products;
   }

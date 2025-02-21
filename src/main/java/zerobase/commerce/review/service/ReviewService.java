@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import zerobase.commerce.exception.CustomException;
+import zerobase.commerce.exception.ErrorCode;
 import zerobase.commerce.order.domain.Order;
 import zerobase.commerce.order.repository.OrderRepository;
 import zerobase.commerce.product.domain.ProductStats;
@@ -27,7 +29,7 @@ public class ReviewService {
   @Transactional
   public Review createReview(Request reviewDtoRequest, Long orderId) {
     Order order = orderRepository.findById(orderId)
-        .orElseThrow(() -> new RuntimeException("주문 정보가 없습니다."));
+        .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
     Review review = reviewRepository.save(Review.builder()
         .product(order.getProduct())
@@ -37,7 +39,7 @@ public class ReviewService {
         .rating(reviewDtoRequest.getRating())
         .build());
 
-    ProductStats stats = productStatsRepository.findById(order.getProduct().getId()).orElseThrow(() -> new RuntimeException("상품 집계 정보가 없습니다."));
+    ProductStats stats = productStatsRepository.findById(order.getProduct().getId()).orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_STATS_NOT_FOUND));
 
     stats.addReviews(reviewDtoRequest.getRating());
     productStatsRepository.save(stats);
@@ -48,20 +50,20 @@ public class ReviewService {
   @Transactional
   public void deleteReview(Long reviewId, String username) {
     Review review = reviewRepository.findById(reviewId)
-        .orElseThrow(() -> new RuntimeException("리뷰가 없습니다."));
+        .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
 
-    User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("사용자가 존재하지 않습니다."));
+    User user = userRepository.findByUsername(username).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
     // 리뷰 작성자가 아니거나 상품 등록자가 아닌 경우
     if (!review.getUser().equals(user) || !review.getProduct().getUser().equals(user)) {
-      throw new RuntimeException("권한이 없습니다.");
+      throw new CustomException(ErrorCode.UNAUTHORIZED_ACCESS);
     }
 
     int rating = review.getRating();
 
     reviewRepository.deleteById(reviewId);
 
-    ProductStats stats = productStatsRepository.findById(review.getProduct().getId()).orElseThrow(() -> new RuntimeException("상품 집계 정보가 없습니다."));
+    ProductStats stats = productStatsRepository.findById(review.getProduct().getId()).orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_STATS_NOT_FOUND));
     stats.deleteReviews(rating);
     productStatsRepository.save(stats);
   }
@@ -69,12 +71,12 @@ public class ReviewService {
   @Transactional
   public Review modifyReview(Request reviewDtoRequest, Long reviewId, String username) {
     Review review = reviewRepository.findById(reviewId)
-        .orElseThrow(() -> new RuntimeException("리뷰가 없습니다."));
+        .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
 
-    User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("사용자가 존재하지 않습니다."));
+    User user = userRepository.findByUsername(username).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
     if (!review.getUser().equals(user)) {
-      throw new RuntimeException("권한이 없습니다.");
+      throw new CustomException(ErrorCode.UNAUTHORIZED_ACCESS);
     }
 
     int oldRating = review.getRating();
@@ -83,7 +85,7 @@ public class ReviewService {
     review.setContent(reviewDtoRequest.getContent());
     review.setRating(reviewDtoRequest.getRating());
 
-    ProductStats stats = productStatsRepository.findById(review.getProduct().getId()).orElseThrow(() -> new RuntimeException("상품 집계 정보가 없습니다."));
+    ProductStats stats = productStatsRepository.findById(review.getProduct().getId()).orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_STATS_NOT_FOUND));
     stats.updateReviews(oldRating, reviewDtoRequest.getRating());
 
     return review;
@@ -93,7 +95,7 @@ public class ReviewService {
   public Page<Review> readReviewList(Long productId, Pageable pageable) {
     Page<Review> reviews = reviewRepository.findAllByProductId(productId, pageable);
     if (reviews.isEmpty()) {
-      throw new RuntimeException("해당 상품에는 리뷰가 없습니다.");
+      throw new CustomException(ErrorCode.REVIEW_NOT_FOUND);
     }
     return reviews;
   }

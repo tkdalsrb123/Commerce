@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import zerobase.commerce.cart.domain.Cart;
 import zerobase.commerce.cart.repository.CartRepository;
+import zerobase.commerce.exception.CustomException;
+import zerobase.commerce.exception.ErrorCode;
 import zerobase.commerce.order.domain.Order;
 import zerobase.commerce.order.dto.OrderDto.Request;
 import zerobase.commerce.order.repository.OrderRepository;
@@ -37,7 +39,7 @@ public class OrderService {
         orderDtoRequest.getQuantity());
 
     ProductStats stats = productStatsRepository.findById(product.getId())
-        .orElseThrow(() -> new RuntimeException("집계 정보가 없습니다."));
+        .orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_STATS_NOT_FOUND));
     stats.updateSales(orderDtoRequest.getQuantity());
     productStatsRepository.save(stats);
 
@@ -53,10 +55,10 @@ public class OrderService {
 
   private User validateBuyerAuthority(String username) {
     User user = userRepository.findByUsername(username)
-        .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
     if (user.getRole() != UserType.ROLE_BUYER) {
-      throw new RuntimeException("권한이 없습니다.");
+      throw new CustomException(ErrorCode.UNAUTHORIZED_ACCESS);
     }
 
     return user;
@@ -65,10 +67,10 @@ public class OrderService {
   private Product validateProductAuthority(Long productId, int quantity) {
 
     Product product = productRepository.findProductById(productId)
-        .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다."));
+        .orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 
     if (product.getStock() < quantity) {
-      throw new RuntimeException("재고가 부족합니다.");
+      throw new CustomException(ErrorCode.INSUFFICIENT_STOCK, product.getName() + "의 재고가 부족합니다.");
     }
 
     return product;
@@ -80,7 +82,7 @@ public class OrderService {
 
     List<Cart> cartProducts = cartRepository.findAllByUser(user);
     if (cartProducts.isEmpty()) {
-      throw new RuntimeException("장바구니가 비어 있습니다.");
+      throw new CustomException(ErrorCode.EMPTY_CART);
     }
 
     List<Long> productIds = cartProducts.stream()
@@ -95,7 +97,7 @@ public class OrderService {
     for (Cart cart : cartProducts) {
       Product product = productMap.get(cart.getProduct().getId());
       if (product.getStock() < cart.getQuantity()) {
-        throw new RuntimeException("재고가 부족한 상품이 있습니다: " + product.getName());
+        throw new CustomException(ErrorCode.INSUFFICIENT_STOCK_IN_CART, product.getName() + "의 재고가 부족합니다.");
       }
 
       product.setStock(product.getStock() - cart.getQuantity());

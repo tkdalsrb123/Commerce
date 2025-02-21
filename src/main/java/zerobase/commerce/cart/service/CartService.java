@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import zerobase.commerce.cart.domain.Cart;
 import zerobase.commerce.cart.repository.CartRepository;
+import zerobase.commerce.exception.CustomException;
+import zerobase.commerce.exception.ErrorCode;
 import zerobase.commerce.product.domain.Product;
 import zerobase.commerce.product.repository.ProductRepository;
 import zerobase.commerce.user.domain.User;
@@ -43,16 +45,16 @@ public class CartService {
     User user = userAndProduct.getFirst();
     Product product = userAndProduct.getSecond();
 
-    Cart cart = cartRepository.findByUserAndProduct(user, product).orElseThrow(() -> new RuntimeException("장바구니에 선택된 상품이 없습니다."));
+    Cart cart = cartRepository.findByUserAndProduct(user, product).orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_IN_CART));
 
     cartRepository.delete(cart);
   }
 
   private Pair<User, Product> getUserAndProduct(Long productId, String username) {
     User user = userRepository.findByUsername(username)
-        .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     Product product = productRepository.findById(productId)
-        .orElseThrow(() -> new RuntimeException("등록된 상품이 없습니다."));
+        .orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 
     return Pair.of(user, product);
   }
@@ -60,7 +62,7 @@ public class CartService {
   @Transactional(readOnly = true)
   public List<Cart> getCartProducts(String username) {
     User user = userRepository.findByUsername(username)
-        .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     System.out.println(user);
     return cartRepository.findAllByUser(user);
 
